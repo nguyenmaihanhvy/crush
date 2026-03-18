@@ -3,100 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thông Điệp Từ Những Vì Sao</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+    <title>Thông Điệp Định Mệnh</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --bg-color: #0b021a;
-            --card-back: #1d0d33;
             --gold: #d4af37;
-            --text-gold: #f3e5ab;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
             background-color: var(--bg-color);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            color: white;
             font-family: 'Cormorant Garamond', serif;
-            overflow: hidden;
-            color: var(--text-gold);
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        /* Hiệu ứng hạt lấp lánh nền */
+        /* Lớp nền hạt lấp lánh */
         #particles-js {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0; /* Đảm bảo nằm dưới cùng */
         }
 
-        .content {
+        .container {
             position: relative;
-            z-index: 2;
+            z-index: 10; /* Đảm bảo nằm trên lớp đen */
             text-align: center;
-            width: 100%;
             padding: 20px;
         }
 
         h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            margin-bottom: 40px;
-            text-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
-            letter-spacing: 2px;
+            color: var(--gold);
+            margin-bottom: 30px;
+            font-size: 2rem;
         }
 
-        .tarot-grid {
+        .card-wrap {
             display: flex;
-            gap: 30px;
+            gap: 20px;
             justify-content: center;
             flex-wrap: wrap;
-            perspective: 1000px;
         }
 
-        /* Cấu trúc lá bài */
         .card {
-            width: 180px;
-            height: 300px;
+            width: 150px;
+            height: 250px;
+            perspective: 1000px;
             cursor: pointer;
-            position: relative;
         }
 
         .card-inner {
             position: relative;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%; height: 100%;
+            transition: transform 0.6s;
             transform-style: preserve-3d;
-            border-radius: 12px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            border: 1px solid var(--gold);
+            border-radius: 10px;
         }
 
-        .card.is-flipped .card-inner {
+        .card.flipped .card-inner {
             transform: rotateY(180deg);
         }
 
-        .card-face {
+        .front, .back {
             position: absolute;
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             backface-visibility: hidden;
-            border: 2px solid var(--gold);
-            border-radius: 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 15px;
+            border-radius: 10px;
+            padding: 10px;
         }
 
-        /* Mặt trước: Họa tiết huyền bí */
-        .card-front {
-            background
+        .front {
+            background: #1a0d2e;
+            font-size: 2rem;
+        }
+
+        .back {
+            background: #fff5e6;
+            color: #2c1a05;
+            transform: rotateY(180deg);
+            text-align: center;
+        }
+
+        .back p { font-size: 1.1rem; line-height: 1.4; }
+    </style>
+</head>
+<body>
+
+    <div id="particles-js"></div>
+
+    <div class="container">
+        <h1>Chọn một lá bài cho hôm nay...</h1>
+        <div class="card-wrap">
+            <div class="card" onclick="this.classList.toggle('flipped')">
+                <div class="card-inner">
+                    <div class="front">🔮</div>
+                    <div class="back"><p>🌸 Bạn rạng rỡ như một đóa hoa sớm mai.</p></div>
+                </div>
+            </div>
+            <div class="card" onclick="this.classList.toggle('flipped')">
+                <div class="card-inner">
+                    <div class="front">🔮</div>
+                    <div class="back"><p>✨ Vũ trụ bảo rằng bạn xứng đáng với những điều ngọt ngào nhất.</p></div>
+                </div>
+            </div>
+            <div class="card" onclick="this.classList.toggle('flipped')">
+                <div class="card-inner">
+                    <div class="front">🔮</div>
+                    <div class="back"><p>🌿 Có một bất ngờ nhỏ đang chờ bạn vào tối nay!</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 50 },
+                "color": { "value": "#d4af37" },
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.5 },
+                "size": { "value": 3 },
+                "line_linked": { "enable": false },
+                "move": { "enable": true, "speed": 1 }
+            }
+        });
+    </script>
+</body>
+</html>
