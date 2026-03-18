@@ -3,58 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thông Điệp Định Mệnh</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+    <title>Lời Thì Thầm Của Hoa Lá</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-color: #0b021a;
-            --gold: #d4af37;
+            --bg-soft: #1e1626; /* Tím khói sâu */
+            --gold-soft: #e2c275;
+            --floral-white: #fff9f2;
         }
 
         body, html {
             margin: 0; padding: 0;
             width: 100%; height: 100%;
-            background-color: var(--bg-color);
-            color: white;
+            background-color: var(--bg-soft);
+            color: var(--floral-white);
             font-family: 'Cormorant Garamond', serif;
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow: hidden;
         }
 
-        /* Lớp nền hạt lấp lánh */
+        /* Lớp nền lấp lánh nhẹ nhàng */
         #particles-js {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            z-index: 0; /* Đảm bảo nằm dưới cùng */
+            z-index: 1;
         }
 
-        .container {
+        .main-content {
             position: relative;
-            z-index: 10; /* Đảm bảo nằm trên lớp đen */
+            z-index: 10;
             text-align: center;
-            padding: 20px;
+            max-width: 800px;
         }
 
         h1 {
             font-family: 'Playfair Display', serif;
-            color: var(--gold);
-            margin-bottom: 30px;
-            font-size: 2rem;
+            font-size: 2.2rem;
+            color: var(--gold-soft);
+            margin-bottom: 40px;
+            font-style: italic;
+            letter-spacing: 1px;
         }
 
-        .card-wrap {
+        .tarot-wrapper {
             display: flex;
-            gap: 20px;
+            gap: 25px;
             justify-content: center;
             flex-wrap: wrap;
         }
 
         .card {
-            width: 150px;
-            height: 250px;
+            width: 170px;
+            height: 280px;
             perspective: 1000px;
             cursor: pointer;
         }
@@ -62,66 +66,107 @@
         .card-inner {
             position: relative;
             width: 100%; height: 100%;
-            transition: transform 0.6s;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             transform-style: preserve-3d;
-            border: 1px solid var(--gold);
-            border-radius: 10px;
         }
 
-        .card.flipped .card-inner {
+        .card.is-flipped .card-inner {
             transform: rotateY(180deg);
         }
 
-        .front, .back {
+        .face {
             position: absolute;
             width: 100%; height: 100%;
             backface-visibility: hidden;
+            border-radius: 12px;
+            border: 2px solid var(--gold-soft);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            border-radius: 10px;
-            padding: 10px;
+            padding: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
         }
 
+        /* Mặt trước: Họa tiết Floral cổ điển */
         .front {
-            background: #1a0d2e;
-            font-size: 2rem;
+            background: linear-gradient(45deg, #2a1b3d 0%, #1e1626 100%);
+            background-image: url('https://www.transparenttextures.com/patterns/floral-paper.png');
         }
 
+        .front-pattern {
+            width: 80%;
+            height: 80%;
+            border: 1px solid rgba(226, 194, 117, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+        }
+
+        /* Mặt sau: Giấy cũ thanh lịch */
         .back {
-            background: #fff5e6;
-            color: #2c1a05;
+            background-color: var(--floral-white);
+            color: #4a3728;
             transform: rotateY(180deg);
-            text-align: center;
+            background-image: url('https://www.transparenttextures.com/patterns/p6.png');
         }
 
-        .back p { font-size: 1.1rem; line-height: 1.4; }
+        .back p {
+            font-size: 1.3rem;
+            line-height: 1.5;
+            font-style: italic;
+        }
+
+        .flower-icon {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #8e6d5a;
+        }
+
+        /* Hiệu ứng mờ ảo cho text */
+        .fade-in {
+            animation: fadeIn 2s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
     </style>
 </head>
 <body>
 
     <div id="particles-js"></div>
 
-    <div class="container">
-        <h1>Chọn một lá bài cho hôm nay...</h1>
-        <div class="card-wrap">
-            <div class="card" onclick="this.classList.toggle('flipped')">
+    <div class="main-content fade-in">
+        <h1>Chọn một đóa hoa cho tâm hồn bạn...</h1>
+        <div class="tarot-wrapper">
+            <div class="card" onclick="this.classList.toggle('is-flipped')">
                 <div class="card-inner">
-                    <div class="front">🔮</div>
-                    <div class="back"><p>🌸 Bạn rạng rỡ như một đóa hoa sớm mai.</p></div>
+                    <div class="face front"><div class="front-pattern">🌿</div></div>
+                    <div class="back">
+                        <div class="flower-icon">🌸</div>
+                        <p>"Vẻ đẹp của bạn nhẹ nhàng như hơi thở của mùa xuân."</p>
+                    </div>
                 </div>
             </div>
-            <div class="card" onclick="this.classList.toggle('flipped')">
+            <div class="card" onclick="this.classList.toggle('is-flipped')">
                 <div class="card-inner">
-                    <div class="front">🔮</div>
-                    <div class="back"><p>✨ Vũ trụ bảo rằng bạn xứng đáng với những điều ngọt ngào nhất.</p></div>
+                    <div class="face front"><div class="front-pattern">🌼</div></div>
+                    <div class="back">
+                        <div class="flower-icon">🌷</div>
+                        <p>"Hôm nay, vũ trụ gửi đến bạn một cái ôm thật ấm."</p>
+                    </div>
                 </div>
             </div>
-            <div class="card" onclick="this.classList.toggle('flipped')">
+            <div class="card" onclick="this.classList.toggle('is-flipped')">
                 <div class="card-inner">
-                    <div class="front">🔮</div>
-                    <div class="back"><p>🌿 Có một bất ngờ nhỏ đang chờ bạn vào tối nay!</p></div>
+                    <div class="face front"><div class="front-pattern">🍃</div></div>
+                    <div class="back">
+                        <div class="flower-icon">🌻</div>
+                        <p>"Có một người luôn mỉm cười khi nghĩ về bạn."</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -131,13 +176,20 @@
     <script>
         particlesJS("particles-js", {
             "particles": {
-                "number": { "value": 50 },
-                "color": { "value": "#d4af37" },
+                "number": { "value": 40, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": "#e2c275" },
                 "shape": { "type": "circle" },
-                "opacity": { "value": 0.5 },
-                "size": { "value": 3 },
+                "opacity": { "value": 0.3, "random": true },
+                "size": { "value": 4, "random": true },
                 "line_linked": { "enable": false },
-                "move": { "enable": true, "speed": 1 }
+                "move": { 
+                    "enable": true, 
+                    "speed": 0.8, 
+                    "direction": "bottom", // Cánh hoa rơi xuống
+                    "random": true, 
+                    "straight": false, 
+                    "out_mode": "out" 
+                }
             }
         });
     </script>
