@@ -3,184 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Khu Vườn Của Bạn</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Dancing+Script:wght@500&display=swap" rel="stylesheet">
+    <title>Khu Vườn Bên Cửa Sổ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500&display=swap" rel="stylesheet">
     
     <style>
-        :root {
-            --soft-gold: #fdf5e6;
-            --text-color: #4a3728;
-            --accent: #8fb996;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body, html {
-            margin: 0; padding: 0;
             width: 100%; height: 100%;
-            font-family: 'Cormorant Garamond', serif;
-            background-color: #fcf8f3;
             overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background-color: #f4e8d1; /* Màu nền giấy cũ */
+            font-family: 'Cormorant Garamond', serif;
         }
 
-        /* Container chính */
-        .window-scene {
+        /* Container chính chứa toàn bộ khung cảnh */
+        #window-wrapper {
             position: relative;
             width: 100vw;
             height: 100vh;
-            background-image: url('https://i.imgur.com/your-window-image.jpg'); /* Thay bằng ảnh cửa sổ của bạn */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: opacity 1.5s ease-in-out, transform 1.5s ease-in-out;
+            z-index: 100;
+        }
+
+        /* Hình ảnh cửa sổ của bạn */
+        .window-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            /* Thay image_2.png bằng đường dẫn ảnh của bạn */
+            background-image: url('image_2.png'); 
             background-size: cover;
             background-position: center;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            align-items: center;
-            padding-bottom: 5vh;
+            /* Hiệu ứng gió thổi nhè nhẹ cho toàn bộ khung cảnh */
+            animation: gentleBreeze 8s ease-in-out infinite;
+            z-index: 1;
         }
 
-        /* Hiệu ứng nắng chiếu xuyên qua (Sunbeams) */
-        .sunlight {
+        /* Lớp phủ ánh nắng lung linh */
+        .sunlight-effect {
             position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, rgba(255,255,255,0) 30%, rgba(255,250,200,0.2) 50%, rgba(255,255,255,0) 70%);
+            background-size: 200% 200%;
+            animation: sunMove 10s linear infinite;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* Gợi ý tương tác */
+        .instruction {
+            position: absolute;
+            bottom: 10%;
+            color: rgba(74, 55, 40, 0.8);
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            z-index: 10;
+            text-shadow: 0 0 10px rgba(255,255,255,0.8);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        /* Animation Gió thổi nhè nhẹ */
+        @keyframes gentleBreeze {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02) rotate(0.2deg); }
+        }
+
+        /* Animation Nắng lay động */
+        @keyframes sunMove {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* Animation Chữ nhấp nháy nhẹ */
+        @keyframes pulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+
+        /* Trạng thái sau khi bấm (Cửa sổ mở ra/biến mất) */
+        .fade-out {
+            opacity: 0;
+            transform: scale(1.1);
+            pointer-events: none;
+        }
+
+        /* Phần nội dung sẽ hiện ra sau (Tạm thời ẩn) */
+        #next-content {
+            position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: linear-gradient(135deg, rgba(255,253,230,0.4) 0%, rgba(255,255,255,0) 50%);
-            pointer-events: none;
-            z-index: 2;
-        }
-
-        /* Khu vực chậu hoa tương tác */
-        .flower-pots {
             display: flex;
-            gap: 40px;
-            z-index: 10;
-        }
-
-        .pot {
-            position: relative;
-            cursor: pointer;
-            transition: transform 0.3s;
-            text-align: center;
-        }
-
-        .pot:hover { transform: scale(1.1); }
-
-        .pot-icon { font-size: 4rem; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.1)); }
-
-        /* Mẩu giấy nhắn hiện ra */
-        .message-tag {
-            position: absolute;
-            bottom: 120%;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: white;
-            padding: 15px 20px;
-            width: 200px;
-            border-radius: 2px;
-            box-shadow: 5px 5px 15px rgba(0,0,0,0.05);
+            justify-content: center;
+            align-items: center;
+            background-color: #fff9f2;
+            z-index: 50;
             opacity: 0;
-            visibility: hidden;
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border-left: 3px solid var(--accent);
+            transition: opacity 2s ease-in-out;
         }
 
-        .message-tag::after {
-            content: '';
-            position: absolute;
-            bottom: -10px; left: 50%;
-            transform: translateX(-50%);
-            border-left: 10px solid transparent;
-            border-right: 10px solid transparent;
-            border-top: 10px solid white;
-        }
-
-        .pot.active .message-tag {
+        #next-content.show {
             opacity: 1;
-            visibility: visible;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        .pot.active .pot-icon { animation: bloom 0.5s ease-in-out forwards; }
-
-        @keyframes bloom {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.3) rotate(10deg); }
-            100% { transform: scale(1.2); }
-        }
-
-        h2 {
-            font-family: 'Dancing Script', cursive;
-            color: var(--text-color);
-            background: rgba(255, 255, 255, 0.7);
-            padding: 10px 30px;
-            border-radius: 50px;
-            font-size: 1.8rem;
-            margin-bottom: 30px;
-            backdrop-filter: blur(5px);
-        }
-
-        .hint {
-            font-size: 1rem;
-            color: #777;
-            margin-top: 10px;
-            letter-spacing: 1px;
         }
     </style>
 </head>
 <body>
 
-    <div class="window-scene">
-        <div class="sunlight"></div>
+    <!-- Màn hình mở đầu -->
+    <div id="window-wrapper" onclick="openWindow()">
+        <div class="window-bg"></div>
+        <div class="sunlight-effect"></div>
+        <p class="instruction">Chạm vào cửa sổ để mở ra...</p>
+    </div>
 
-        <div class="content">
-            <h2>Chạm vào từng nhành cây để lắng nghe...</h2>
-            
-            <div class="flower-pots">
-                <!-- Chậu 1 -->
-                <div class="pot" onclick="togglePot(this)">
-                    <div class="message-tag">
-                        <p>Bạn biết không? Nụ cười của bạn làm bừng sáng cả căn phòng này.</p>
-                    </div>
-                    <div class="pot-icon">🌿</div>
-                    <div class="hint">Tưới nước</div>
-                </div>
-
-                <!-- Chậu 2 -->
-                <div class="pot" onclick="togglePot(this)">
-                    <div class="message-tag">
-                        <p>Hôm nay trời nắng đẹp, rất thích hợp để chúng mình đi cafe nhỉ?</p>
-                    </div>
-                    <div class="pot-icon">🌸</div>
-                    <div class="hint">Tưới nước</div>
-                </div>
-
-                <!-- Chậu 3 -->
-                <div class="pot" onclick="togglePot(this)">
-                    <div class="message-tag">
-                        <p>Cảm ơn bạn đã luôn là một đóa hoa rạng rỡ nhất trong lòng tôi.</p>
-                    </div>
-                    <div class="pot-icon">🌼</div>
-                    <div class="hint">Tưới nước</div>
-                </div>
-            </div>
-        </div>
+    <!-- Màn hình tiếp theo (Bạn sẽ triển khai thêm ở đây) -->
+    <div id="next-content">
+        <h1 style="color: #4a3728; font-style: italic;">Chào mừng bạn đến với khu vườn...</h1>
     </div>
 
     <script>
-        function togglePot(element) {
-            // Đóng các chậu khác nếu muốn (tùy chọn)
-            document.querySelectorAll('.pot').forEach(p => {
-                if(p !== element) p.classList.remove('active');
-            });
-            
-            // Bật chậu hiện tại
-            element.classList.toggle('active');
-            
-            // Đổi icon hoa khi nở (tùy chọn)
-            const icon = element.querySelector('.pot-icon');
-            if (element.classList.contains('active')) {
-                if (icon.innerText === '🌿') icon.innerText = '🪴';
-            }
+        function openWindow() {
+            const windowWrapper = document.getElementById('window-wrapper');
+            const nextContent = document.getElementById('next-content');
+
+            // Kích hoạt hiệu ứng biến mất cho cửa sổ
+            windowWrapper.classList.add('fade-out');
+
+            // Sau khi hiệu ứng hoàn tất, cho nội dung mới hiện lên
+            setTimeout(() => {
+                windowWrapper.style.display = 'none';
+                nextContent.classList.add('show');
+            }, 1500);
         }
     </script>
 </body>
