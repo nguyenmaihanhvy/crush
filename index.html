@@ -3,128 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Khu Vườn Bên Cửa Sổ</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1@500&display=swap" rel="stylesheet">
-    
+    <title>The Secret Window</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Quicksand:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body, html {
-            width: 100%; height: 100%;
-            overflow: hidden;
-            background-color: #f4e8d1; /* Màu nền giấy cũ nếu ảnh chưa load xong */
-            font-family: 'Cormorant Garamond', serif;
+        :root {
+            --wood: #6d4c41;
+            --leaf: #81c784;
+            --flower: #f06292;
+            --sky: #e3f2fd;
         }
 
-        #window-wrapper {
-            position: relative;
-            width: 100vw;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: #faf3e0;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            cursor: pointer;
-            z-index: 100;
+            overflow: hidden;
+            font-family: 'Quicksand', sans-serif;
         }
 
-        .window-bg {
-            position: absolute;
+        /* KHUNG CẢNH GAME */
+        #game-container {
+            position: relative;
             width: 100%;
             height: 100%;
-            /* TÔI ĐÃ THAY BẰNG LINK ẢNH TRỰC TIẾP ĐỂ TRÁNH LỖI TRẮNG TRANG */
-            background-image: url('https://lh3.googleusercontent.com/d/1ZpI2p-7H7pU6kX-k5S5J9R8YQZ_K7I_T'); 
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            animation: gentleBreeze 10s ease-in-out infinite;
-            z-index: 1;
-        }
-
-        /* Hiệu ứng nắng chiếu mờ ảo */
-        .sunlight-effect {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,245,200,0.2) 50%, rgba(255,255,255,0) 100%);
-            z-index: 2;
-            pointer-events: none;
-        }
-
-        .instruction {
-            position: absolute;
-            bottom: 12%;
-            color: #4a3728;
-            font-size: 1.3rem;
-            font-style: italic;
-            z-index: 10;
-            letter-spacing: 1px;
-            opacity: 0.8;
-            animation: pulse 3s ease-in-out infinite;
-        }
-
-        @keyframes gentleBreeze {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.03); }
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 0.3; transform: translateY(0); }
-            50% { opacity: 0.9; transform: translateY(-5px); }
-        }
-
-        /* Hiệu ứng khi bấm vào cửa sổ */
-        .fade-out {
-            opacity: 0;
-            transition: opacity 1.5s ease-in-out;
-            pointer-events: none;
-        }
-
-        #next-content {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #fffaf5;
-            z-index: 50;
-            opacity: 0;
-            transition: opacity 2s ease-in-out;
+            background: linear-gradient(to bottom, var(--sky), #ffffff);
+            cursor: pointer;
         }
 
-        #next-content.show {
-            opacity: 1;
+        /* CỬA SỔ GỖ (Vẽ bằng CSS) */
+        .window-frame {
+            position: relative;
+            width: 320px;
+            height: 450px;
+            border: 15px solid var(--wood);
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1), inset 0 0 20px rgba(0,0,0,0.1);
+            display: flex;
+            z-index: 5;
         }
+
+        /* Thanh gỗ chia ô cửa */
+        .window-frame::before {
+            content: '';
+            position: absolute;
+            top: 50%; left: 0; width: 100%; height: 8px;
+            background: var(--wood); transform: translateY(-50%);
+        }
+        .window-frame::after {
+            content: '';
+            position: absolute;
+            left: 50%; top: 0; width: 8px; height: 100%;
+            background: var(--wood); transform: translateX(-50%);
+        }
+
+        /* RÈM CỬA LAY ĐỘNG */
+        .curtain {
+            position: absolute;
+            top: 0;
+            width: 60%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 6;
+            transition: all 1.5s ease-in-out;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .curtain.left { left: 0; border-radius: 0 0 100% 0; animation: sway 4s infinite ease-in-out; }
+        .curtain.right { right: 0; border-radius: 0 0 0 100%; animation: sway 4.5s infinite ease-in-out reverse; }
+
+        /* HOA CỎ BÊN DƯỚI */
+        .garden {
+            position: absolute;
+            bottom: -20px;
+            width: 120%;
+            display: flex;
+            justify-content: space-around;
+            z-index: 10;
+        }
+
+        .flower {
+            font-size: 3rem;
+            animation: bounce 3s infinite ease-in-out;
+        }
+
+        /* HIỆU ỨNG KHI CLICK */
+        .window-frame.open .curtain.left { transform: translateX(-100%) rotateY(-20deg); opacity: 0.3; }
+        .window-frame.open .curtain.right { transform: translateX(100%) rotateY(20deg); opacity: 0.3; }
+
+        /* TEXT GỢI Ý */
+        .ui-text {
+            position: absolute;
+            bottom: 50px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 2rem;
+            color: var(--wood);
+            text-align: center;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        /* ANIMATIONS */
+        @keyframes sway {
+            0%, 100% { transform: skewX(2deg); }
+            50% { transform: skewX(-2deg); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0) rotate(0); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        /* MÀN HÌNH SAU KHI MỞ */
+        #secret-message {
+            position: absolute;
+            opacity: 0;
+            transition: 2s;
+            text-align: center;
+            z-index: 1;
+        }
+        #secret-message.show { opacity: 1; transform: scale(1.1); }
     </style>
 </head>
 <body>
 
-    <div id="window-wrapper" onclick="openWindow()">
-        <!-- Lớp ảnh nền -->
-        <div class="window-bg"></div>
-        <!-- Lớp nắng -->
-        <div class="sunlight-effect"></div>
-        <p class="instruction">Chạm vào cửa sổ để mở ra...</p>
-    </div>
-
-    <div id="next-content">
-        <div style="text-align: center;">
-            <h1 style="color: #5d4037; font-weight: normal; font-size: 2.5rem;">Cánh cửa đã mở...</h1>
-            <p style="color: #8d6e63; margin-top: 10px;">(Tiếp tục triển khai ý tưởng của bạn tại đây)</p>
+    <div id="game-container" onclick="handleInteraction()">
+        
+        <!-- THÔNG ĐIỆP ẨN DƯỚI CỬA SỔ -->
+        <div id="secret-message">
+            <h2 style="color: #d81b60; font-size: 2.5rem; font-family: 'Dancing Script';">Bạn là điều tuyệt vời nhất!</h2>
+            <p style="color: #6d4c41;">Khu vườn này nở hoa là vì có bạn...</p>
         </div>
+
+        <!-- KHUNG CỬA SỔ -->
+        <div class="window-frame" id="window">
+            <div class="curtain left"></div>
+            <div class="curtain right"></div>
+        </div>
+
+        <!-- HOA CỎ DƯỚI CÙNG -->
+        <div class="garden">
+            <div class="flower" style="animation-delay: 0.1s">🌸</div>
+            <div class="flower" style="animation-delay: 0.5s">🌷</div>
+            <div class="flower" style="animation-delay: 0.3s">🌿</div>
+            <div class="flower" style="animation-delay: 0.7s">🌻</div>
+            <div class="flower" style="animation-delay: 0.2s">🌸</div>
+        </div>
+
+        <div class="ui-text" id="hint">Gió thổi nhè nhẹ... Chạm để mở cửa sổ nhé</div>
     </div>
 
     <script>
-        function openWindow() {
-            const windowWrapper = document.getElementById('window-wrapper');
-            const nextContent = document.getElementById('next-content');
+        let isOpen = false;
 
-            windowWrapper.classList.add('fade-out');
+        function handleInteraction() {
+            if(!isOpen) {
+                const windowFrame = document.getElementById('window');
+                const hint = document.getElementById('hint');
+                const message = document.getElementById('secret-message');
 
-            setTimeout(() => {
-                windowWrapper.style.display = 'none';
-                nextContent.classList.add('show');
-            }, 1500);
+                // Mở cửa sổ
+                windowFrame.classList.add('open');
+                
+                // Ẩn hướng dẫn
+                hint.style.opacity = '0';
+
+                // Hiện thông điệp bí mật
+                setTimeout(() => {
+                    message.classList.add('show');
+                }, 800);
+
+                isOpen = true;
+            }
         }
     </script>
 </body>
