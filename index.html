@@ -17,57 +17,47 @@
             align-items: center;
             font-family: 'Quicksand', sans-serif;
             color: white;
-            perspective: 1200px; /* Tăng độ sâu cho hiệu ứng 3D xoay */
+            perspective: 1200px;
         }
 
-        /* ----- 1. LỚP SƯƠNG MÙ ĐA TẦNG (MOVING FOG) ----- */
+        /* ----- 1. LỚP SƯƠNG MÙ ----- */
         .fog-container {
             position: fixed;
-            width: 150%;
-            height: 150%;
+            width: 150%; height: 150%;
             top: -25%; left: -25%;
             z-index: 2;
             pointer-events: none;
-            filter: blur(50px); /* Làm mờ mạnh để sương trông mềm mại */
+            filter: blur(60px);
         }
 
         .fog-layer {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                135deg,
-                rgba(72, 52, 212, 0.05) 0%,   /* Tím mờ */
-                rgba(104, 109, 224, 0.05) 30%, /* Xanh mờ */
-                transparent 70%,
-                rgba(190, 46, 221, 0.03) 100%   /* Hồng mờ */
-            );
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(72, 52, 212, 0.05) 0%, rgba(104, 109, 224, 0.05) 30%, transparent 70%, rgba(190, 46, 221, 0.03) 100%);
             background-size: 200% 200%;
-            animation: moveFog infinite linear;
+            animation: moveFog 40s infinite linear;
         }
-        /* Lớp sương 1: Di chuyển chậm */
-        .fog-layer.one { animation-duration: 40s; opacity: 0.6; }
-        /* Lớp sương 2: Di chuyển ngược lại, nhanh hơn */
-        .fog-layer.two { animation-duration: 30s; animation-direction: reverse; opacity: 0.4; transform: scale(1.2); }
-        /* Lớp sương 3: Di chuyển xéo, rất chậm */
-        .fog-layer.three { animation-duration: 50s; animation-delay: -10s; background-position: 100% 100%; opacity: 0.3; }
 
-        /* ----- 2. HỆ THỐNG VŨ TRỤ XOAY 360 ĐỘ ----- */
+        /* ----- 2. VŨ TRỤ XOAY 360 ----- */
         #universe {
             position: fixed;
             width: 100%; height: 100%;
             transform-style: preserve-3d;
-            animation: rotateUniverse 60s infinite linear; /* Tự động xoay chậm */
+            animation: rotateUniverse 80s infinite linear;
             z-index: 1;
         }
 
-        canvas {
-            position: absolute;
-            width: 100%; height: 100%;
+        canvas { position: absolute; width: 100%; height: 100%; pointer-events: none; }
+
+        /* ----- 3. HIỆU ỨNG GIỌT NƯỚC/SAO THEO CHUỘT ----- */
+        #trail-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            z-index: 5; /* Nằm trên sương nhưng dưới nội dung */
             pointer-events: none;
         }
 
-        /* ----- 3. NỘI DUNG CHÍNH (LƠ LỬNG TRONG TÂM) ----- */
+        /* ----- 4. NỘI DUNG CHÍNH ----- */
         .main-stage {
             position: relative;
             z-index: 10;
@@ -76,13 +66,12 @@
         }
 
         .floating-star {
-            width: 100px;
-            height: 100px;
+            width: 100px; height: 100px;
             background: radial-gradient(circle, #fff 0%, rgba(255,255,255,0) 70%);
             border-radius: 50%;
             margin: 0 auto 30px;
             cursor: pointer;
-            box-shadow: 0 0 50px rgba(255,255,255,0.7), 0 0 100px rgba(104, 109, 224, 0.5);
+            box-shadow: 0 0 50px rgba(255,255,255,0.7), 0 0 100px rgba(104, 109, 224, 0.4);
             animation: floatStar 5s infinite ease-in-out;
             display: flex;
             justify-content: center;
@@ -94,154 +83,155 @@
             font-family: 'Dancing Script', cursive;
             font-size: 2.8rem;
             margin-bottom: 10px;
-            letter-spacing: 2px;
-            opacity: 0.9;
-            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+            text-shadow: 0 0 15px rgba(255,255,255,0.5);
         }
 
         .sub-text {
             font-weight: 300;
-            font-size: 1rem;
+            font-size: 0.9rem;
             letter-spacing: 5px;
+            color: rgba(255,255,255,0.5);
             text-transform: uppercase;
-            color: rgba(255,255,255,0.6);
         }
 
-        /* MODAL THÔNG ĐIỆP */
+        /* MODAL */
         #message-box {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.92);
             display: none;
             justify-content: center;
             align-items: center;
             z-index: 100;
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(25px);
         }
 
         .card {
             padding: 50px;
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 30px;
             text-align: center;
             max-width: 450px;
-            background: rgba(255,255,255,0.03);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            background: rgba(255,255,255,0.02);
         }
 
-        /* ----- ANIMATIONS ----- */
-        /* Di chuyển sương mù */
-        @keyframes moveFog {
-            0% { background-position: 0% 0%; }
-            50% { background-position: 100% 100%; }
-            100% { background-position: 0% 0%; }
-        }
-
-        /* Xoay vũ trụ 360 độ */
-        @keyframes rotateUniverse {
-            from { transform: rotateY(0deg) rotateX(10deg); }
-            to { transform: rotateY(360deg) rotateX(10deg); }
-        }
-
-        /* Ngôi sao lơ lửng */
-        @keyframes floatStar {
-            0%, 100% { transform: translateY(0) scale(1) rotate(0deg); filter: brightness(1); }
-            50% { transform: translateY(-25px) scale(1.1) rotate(5deg); filter: brightness(1.3); }
-        }
+        @keyframes moveFog { 0% { background-position: 0% 0%; } 100% { background-position: 200% 200%; } }
+        @keyframes rotateUniverse { from { transform: rotateY(0deg); } to { transform: rotateY(360deg); } }
+        @keyframes floatStar { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-25px) scale(1.1); } }
     </style>
 </head>
 <body>
 
-    <div class="fog-container">
-        <div class="fog-layer one"></div>
-        <div class="fog-layer two"></div>
-        <div class="fog-layer three"></div>
-    </div>
-
+    <div class="fog-container"><div class="fog-layer"></div></div>
+    
     <div id="universe">
         <canvas id="stars-far"></canvas>
-        <canvas id="stars-near"></canvas>
     </div>
+
+    <!-- Canvas riêng cho hiệu ứng giọt nước/chuột -->
+    <canvas id="trail-canvas"></canvas>
 
     <div class="main-stage">
         <div class="floating-star" onclick="showMessage()">✨</div>
-        <p class="sub-text">Chạm vào tinh tú duy nhất</p>
+        <h1>Lơ Lửng Giữa Vô Cực...</h1>
+        <p class="sub-text">Di chuyển chuột để thấy điều kỳ diệu</p>
     </div>
 
     <div id="message-box" onclick="closeMessage()">
         <div class="card">
-            <h2 style="font-family: 'Dancing Script'; font-size: 2.5rem; margin-bottom: 20px; color: #a29bfe;">Chào bạn!</h2>
-            <p style="line-height: 2; font-weight: 300; font-size: 1.1rem; color: rgba(255,255,255,0.8);">
-                Giữa vũ trụ bao la này, cảm ơn bạn đã xuất hiện và trở thành một phần đẹp đẽ nhất trong thế giới của tôi. 
-                <br><br>
-                <b>Chúc bạn một ngày thật bình yên nhé!</b>
+            <h2 style="font-family: 'Dancing Script'; font-size: 2.5rem; margin-bottom: 20px; color: #a29bfe;">Gửi Bạn...</h2>
+            <p style="line-height: 2; font-weight: 300; color: rgba(255,255,255,0.8);">
+                Trong hàng tỷ tọa độ, cảm ơn bạn đã chọn dừng chân tại vì sao này. <br> Chúc bạn một hành trình thật đẹp.
             </p>
         </div>
     </div>
 
     <script>
-        // Xử lý vẽ sao trên Canvas
-        function createStars(id, count, speed) {
-            const canvas = document.getElementById(id);
+        // --- 1. Vẽ sao nền ---
+        function createStars() {
+            const canvas = document.getElementById('stars-far');
             const ctx = canvas.getContext('2d');
             let stars = [];
+            canvas.width = window.innerWidth * 2;
+            canvas.height = window.innerHeight * 2;
+            canvas.style.top = '-50%'; canvas.style.left = '-50%';
 
-            function init() {
-                // Tăng kích thước canvas để sao không bị đứt đoạn khi xoay
-                canvas.width = window.innerWidth * 2;
-                canvas.height = window.innerHeight * 2;
-                canvas.style.top = '-50%';
-                canvas.style.left = '-50%';
-                stars = [];
-                for (let i = 0; i < count; i++) {
-                    stars.push({
-                        x: Math.random() * canvas.width,
-                        y: Math.random() * canvas.height,
-                        // Tăng kích thước sao để rõ ràng hơn
-                        size: Math.random() * (id === 'stars-near' ? 2.5 : 1.5),
-                        o: Math.random(),
-                        // Thêm hiệu ứng nhấp nháy ngẫu nhiên
-                        twinkle: Math.random() * 0.02
-                    });
-                }
+            for (let i = 0; i < 300; i++) {
+                stars.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, size: Math.random() * 1.5, o: Math.random() });
             }
 
             function animate() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 stars.forEach(s => {
-                    // Cập nhật độ mờ để nhấp nháy
-                    s.o += s.twinkle;
-                    if (s.o > 1 || s.o < 0.2) s.twinkle = -s.twinkle;
-
                     ctx.fillStyle = `rgba(255, 255, 255, ${s.o})`;
-                    ctx.beginPath();
-                    ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
-                    ctx.fill();
-                    
-                    // Sao trôi chậm
-                    s.y -= speed;
-                    if (s.y < 0) s.y = canvas.height;
+                    ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2); ctx.fill();
                 });
                 requestAnimationFrame(animate);
             }
-
-            window.addEventListener('resize', init);
-            init();
             animate();
         }
+        createStars();
 
-        // Tạo 2 lớp sao
-        createStars('stars-far', 200, 0.03);
-        createStars('stars-near', 100, 0.1);
+        // --- 2. HIỆU ỨNG GIỌT NƯỚC THEO CHUỘT ---
+        const trailCanvas = document.getElementById('trail-canvas');
+        const trailCtx = trailCanvas.getContext('2d');
+        let particles = [];
 
-        function showMessage() {
-            document.getElementById('message-box').style.display = 'flex';
+        function resizeTrail() {
+            trailCanvas.width = window.innerWidth;
+            trailCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeTrail);
+        resizeTrail();
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 4 + 1;
+                this.speedX = Math.random() * 2 - 1;
+                this.speedY = Math.random() * 2 - 1;
+                this.color = `rgba(162, 155, 254, ${Math.random() * 0.5 + 0.2})`; // Màu tím nhạt mờ ảo
+                this.life = 1; // Độ bền của hạt
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.life > 0) this.life -= 0.015; // Giọt nước tan dần
+            }
+            draw() {
+                trailCtx.fillStyle = this.color;
+                trailCtx.globalAlpha = this.life;
+                trailCtx.beginPath();
+                trailCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                trailCtx.fill();
+            }
         }
 
-        function closeMessage() {
-            document.getElementById('message-box').style.display = 'none';
+        window.addEventListener('mousemove', (e) => {
+            // Mỗi khi chuột di chuyển, tạo ra 3 "giọt nước"
+            for (let i = 0; i < 3; i++) {
+                particles.push(new Particle(e.clientX, e.clientY));
+            }
+        });
+
+        function animateTrail() {
+            trailCtx.clearRect(0, 0, trailCanvas.width, trailCanvas.height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+                if (particles[i].life <= 0) {
+                    particles.splice(i, 1);
+                    i--;
+                }
+            }
+            requestAnimationFrame(animateTrail);
         }
+        animateTrail();
+
+        function showMessage() { document.getElementById('message-box').style.display = 'flex'; }
+        function closeMessage() { document.getElementById('message-box').style.display = 'none'; }
     </script>
 </body>
 </html>
