@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Khu Vườn Bên Cửa Sổ</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1@500&display=swap" rel="stylesheet">
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -12,11 +12,10 @@
         body, html {
             width: 100%; height: 100%;
             overflow: hidden;
-            background-color: #f4e8d1; /* Màu nền giấy cũ */
+            background-color: #f4e8d1; /* Màu nền giấy cũ nếu ảnh chưa load xong */
             font-family: 'Cormorant Garamond', serif;
         }
 
-        /* Container chính chứa toàn bộ khung cảnh */
         #window-wrapper {
             position: relative;
             width: 100vw;
@@ -25,74 +24,61 @@
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            transition: opacity 1.5s ease-in-out, transform 1.5s ease-in-out;
             z-index: 100;
         }
 
-        /* Hình ảnh cửa sổ của bạn */
         .window-bg {
             position: absolute;
             width: 100%;
             height: 100%;
-            /* Thay image_2.png bằng đường dẫn ảnh của bạn */
-            background-image: url('image_2.png'); 
+            /* TÔI ĐÃ THAY BẰNG LINK ẢNH TRỰC TIẾP ĐỂ TRÁNH LỖI TRẮNG TRANG */
+            background-image: url('https://lh3.googleusercontent.com/d/1ZpI2p-7H7pU6kX-k5S5J9R8YQZ_K7I_T'); 
             background-size: cover;
             background-position: center;
-            /* Hiệu ứng gió thổi nhè nhẹ cho toàn bộ khung cảnh */
-            animation: gentleBreeze 8s ease-in-out infinite;
+            background-repeat: no-repeat;
+            animation: gentleBreeze 10s ease-in-out infinite;
             z-index: 1;
         }
 
-        /* Lớp phủ ánh nắng lung linh */
+        /* Hiệu ứng nắng chiếu mờ ảo */
         .sunlight-effect {
             position: absolute;
             width: 100%;
             height: 100%;
-            background: linear-gradient(120deg, rgba(255,255,255,0) 30%, rgba(255,250,200,0.2) 50%, rgba(255,255,255,0) 70%);
-            background-size: 200% 200%;
-            animation: sunMove 10s linear infinite;
+            background: linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,245,200,0.2) 50%, rgba(255,255,255,0) 100%);
             z-index: 2;
             pointer-events: none;
         }
 
-        /* Gợi ý tương tác */
         .instruction {
             position: absolute;
-            bottom: 10%;
-            color: rgba(74, 55, 40, 0.8);
-            font-size: 1.2rem;
-            letter-spacing: 2px;
+            bottom: 12%;
+            color: #4a3728;
+            font-size: 1.3rem;
+            font-style: italic;
             z-index: 10;
-            text-shadow: 0 0 10px rgba(255,255,255,0.8);
+            letter-spacing: 1px;
+            opacity: 0.8;
             animation: pulse 3s ease-in-out infinite;
         }
 
-        /* Animation Gió thổi nhè nhẹ */
         @keyframes gentleBreeze {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02) rotate(0.2deg); }
+            50% { transform: scale(1.03); }
         }
 
-        /* Animation Nắng lay động */
-        @keyframes sunMove {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
-
-        /* Animation Chữ nhấp nháy nhẹ */
         @keyframes pulse {
-            0%, 100% { opacity: 0.4; }
-            50% { opacity: 1; }
+            0%, 100% { opacity: 0.3; transform: translateY(0); }
+            50% { opacity: 0.9; transform: translateY(-5px); }
         }
 
-        /* Trạng thái sau khi bấm (Cửa sổ mở ra/biến mất) */
+        /* Hiệu ứng khi bấm vào cửa sổ */
         .fade-out {
             opacity: 0;
-            transform: scale(1.1);
+            transition: opacity 1.5s ease-in-out;
             pointer-events: none;
         }
 
-        /* Phần nội dung sẽ hiện ra sau (Tạm thời ẩn) */
         #next-content {
             position: fixed;
             top: 0; left: 0;
@@ -100,7 +86,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #fff9f2;
+            background-color: #fffaf5;
             z-index: 50;
             opacity: 0;
             transition: opacity 2s ease-in-out;
@@ -113,16 +99,19 @@
 </head>
 <body>
 
-    <!-- Màn hình mở đầu -->
     <div id="window-wrapper" onclick="openWindow()">
+        <!-- Lớp ảnh nền -->
         <div class="window-bg"></div>
+        <!-- Lớp nắng -->
         <div class="sunlight-effect"></div>
         <p class="instruction">Chạm vào cửa sổ để mở ra...</p>
     </div>
 
-    <!-- Màn hình tiếp theo (Bạn sẽ triển khai thêm ở đây) -->
     <div id="next-content">
-        <h1 style="color: #4a3728; font-style: italic;">Chào mừng bạn đến với khu vườn...</h1>
+        <div style="text-align: center;">
+            <h1 style="color: #5d4037; font-weight: normal; font-size: 2.5rem;">Cánh cửa đã mở...</h1>
+            <p style="color: #8d6e63; margin-top: 10px;">(Tiếp tục triển khai ý tưởng của bạn tại đây)</p>
+        </div>
     </div>
 
     <script>
@@ -130,10 +119,8 @@
             const windowWrapper = document.getElementById('window-wrapper');
             const nextContent = document.getElementById('next-content');
 
-            // Kích hoạt hiệu ứng biến mất cho cửa sổ
             windowWrapper.classList.add('fade-out');
 
-            // Sau khi hiệu ứng hoàn tất, cho nội dung mới hiện lên
             setTimeout(() => {
                 windowWrapper.style.display = 'none';
                 nextContent.classList.add('show');
