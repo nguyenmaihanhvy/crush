@@ -3,32 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thông Điệp Từ Những Đóa Hoa</title>
+    <title>Lời Thì Thầm Của Hoa Lá</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-deep: #0f0a1a;
-            --gold-bright: #e2c275;
-            --cream: #fff9f2;
+            --bg-soft: #1e1626; /* Tím khói sâu cho giao diện Tarot */
+            --gold-soft: #e2c275;
+            --floral-white: #fff9f2;
+            --sunlight: #fffbea; /* Màu nắng mờ cho cửa sổ */
         }
 
         body, html {
             margin: 0; padding: 0;
             width: 100%; height: 100%;
-            background-color: var(--bg-deep);
-            color: var(--cream);
             font-family: 'Cormorant Garamond', serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
+            overflow: hidden; /* Ngăn cuộn trang */
+            background-color: black; /* Màu nền lót */
         }
 
-        #particles-js {
+        /* ----- Màn hình 1: Khung cảnh cửa sổ mở đầu ----- */
+        #hero-screen {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 1;
+            transition: opacity 1s ease-out; /* Hiệu ứng mờ dần khi chuyển cảnh */
+        }
+
+        #hero-screen .bg-window {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            /* CHÈN ĐƯỜNG LINK ẢNH CỬA SỔ CỦA BẠN VÀO ĐÂY */
+            background-image: url('image_2.png');
+            background-size: cover;
+            background-position: center;
+            filter: blur(1px) brightness(0.9); /* Làm mờ nhẹ và dịu ánh nắng */
+            z-index: 1;
+        }
+
+        /* Hiệu ứng nắng lung linh mờ trên cửa sổ */
+        #hero-screen .sunlight-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: radial-gradient(circle, var(--sunlight) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0.15;
+            z-index: 2;
+            mix-blend-mode: soft-light;
+        }
+
+        #hero-screen .content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            color: #4a3728; /* Màu nâu đất cho chữ trên nền cửa sổ */
+            text-shadow: 0 1px 3px rgba(255,255,255,0.5);
+        }
+
+        #hero-screen h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        /* Nút bấm chuyển cảnh */
+        .cta-button {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: var(--floral-white);
+            color: #2c1a05;
+            text-decoration: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            border: 1px solid rgba(74, 55, 40, 0.3);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+
+        /* ----- Màn hình 2: Trải bài Tarot ----- */
+        #tarot-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: var(--bg-soft);
+            color: var(--floral-white);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 50;
+            opacity: 0; /* Mặc định ẩn đi */
+            transition: opacity 1s ease-in; /* Hiệu ứng hiện dần */
+            pointer-events: none; /* Không cho tương tác khi đang ẩn */
+        }
+
+        #tarot-screen.active {
+            opacity: 1;
+            pointer-events: auto; /* Bật tương tác khi hiện */
+        }
+
+        /* Lớp nền lấp lánh (Dùng CSS thay vì particles.js để đảm bảo ổn định) */
+        .twinkle-background {
+            position: absolute;
+            width: 100%; height: 100%;
+            top: 0; left: 0;
+            background-image: 
+                radial-gradient(var(--gold-soft) 1px, transparent 1px),
+                radial-gradient(var(--gold-soft) 1px, transparent 1px);
+            background-size: 50px 50px;
+            background-position: 0 0, 25px 25px;
+            opacity: 0.05;
             z-index: 1;
         }
 
@@ -36,36 +133,36 @@
             position: relative;
             z-index: 10;
             text-align: center;
-            width: 100%;
+            max-width: 800px;
         }
 
         h1 {
             font-family: 'Playfair Display', serif;
             font-size: 2.2rem;
-            color: var(--gold-bright);
-            margin-bottom: 30px;
+            color: var(--gold-soft);
+            margin-bottom: 40px;
             font-style: italic;
-            text-shadow: 0 0 10px rgba(226, 194, 117, 0.4);
+            letter-spacing: 1px;
         }
 
         .tarot-wrapper {
             display: flex;
-            gap: 20px;
+            gap: 25px;
             justify-content: center;
             flex-wrap: wrap;
-            perspective: 1500px; /* Tăng độ sâu 3D */
         }
 
         .card {
-            width: 200px;
-            height: 340px;
+            width: 170px;
+            height: 280px;
+            perspective: 1000px;
             cursor: pointer;
         }
 
         .card-inner {
             position: relative;
             width: 100%; height: 100%;
-            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             transform-style: preserve-3d;
         }
 
@@ -76,140 +173,117 @@
         .face {
             position: absolute;
             width: 100%; height: 100%;
-            backface-visibility: hidden; /* Quan trọng: Giấu mặt sau khi lật */
-            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
             border-radius: 12px;
-            border: 2px solid var(--gold-bright);
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        /* Mặt trước */
-        .front {
-            background: #1e1626;
-            background-image: url('https://www.transparenttextures.com/patterns/floral-paper.png');
+            border: 2px solid var(--gold-soft);
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            padding: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
         }
 
-        .front-design {
-            width: 85%; height: 90%;
+        /* Mặt trước: Họa tiết Floral cổ điển */
+        .front {
+            background: linear-gradient(45deg, #2a1b3d 0%, #1e1626 100%);
+            background-image: url('https://www.transparenttextures.com/patterns/floral-paper.png');
+        }
+
+        .front-pattern {
+            width: 80%;
+            height: 80%;
             border: 1px solid rgba(226, 194, 117, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3rem;
-            color: var(--gold-bright);
+            font-size: 2.5rem;
+            color: rgba(226, 194, 117, 0.6);
         }
 
-        /* Mặt sau */
+        /* Mặt sau: Giấy cũ thanh lịch */
         .back {
-            background-color: var(--cream);
-            color: #2c1a05;
+            background-color: var(--floral-white);
+            color: #4a3728;
             transform: rotateY(180deg);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .card-img {
-            width: 100%;
-            height: 65%;
-            object-fit: cover;
-            border-bottom: 1px solid var(--gold-bright);
-        }
-
-        .card-desc {
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            flex-grow: 1;
             background-image: url('https://www.transparenttextures.com/patterns/p6.png');
         }
 
-        .card-desc h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.1rem;
-            margin-bottom: 5px;
-            color: #8e6d5a;
-        }
-
-        .card-desc p {
-            font-size: 0.95rem;
-            line-height: 1.3;
+        .back p {
+            font-size: 1.3rem;
+            line-height: 1.5;
             font-style: italic;
         }
 
-        @media (max-width: 600px) {
-            .card { width: 140px; height: 240px; }
-            h1 { font-size: 1.5rem; }
+        .flower-icon {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #8e6d5a;
         }
     </style>
 </head>
 <body>
 
-    <div id="particles-js"></div>
-
-    <div class="main-content">
-        <h1>Thông điệp từ những đóa hoa...</h1>
-        <div class="tarot-wrapper">
-            
-            <div class="card" onclick="this.classList.toggle('is-flipped')">
-                <div class="card-inner">
-                    <div class="face front"><div class="front-design">🌸</div></div>
-                    <div class="back">
-                        <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=500" class="card-img" alt="The Lovers">
-                        <div class="card-desc">
-                            <h3>The Lovers</h3>
-                            <p>"Sự kết nối giữa chúng ta là điều kỳ diệu nhất mà vũ trụ ban tặng."</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card" onclick="this.classList.toggle('is-flipped')">
-                <div class="card-inner">
-                    <div class="face front"><div class="front-design">🌿</div></div>
-                    <div class="back">
-                        <img src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?q=80&w=500" class="card-img" alt="Ten of Cups">
-                        <div class="card-desc">
-                            <h3>Ten of Cups</h3>
-                            <p>"Hạnh phúc trọn vẹn đôi khi chỉ đơn giản là thấy nụ cười của bạn mỗi ngày."</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card" onclick="this.classList.toggle('is-flipped')">
-                <div class="card-inner">
-                    <div class="face front"><div class="front-design">✨</div></div>
-                    <div class="back">
-                        <img src="https://images.unsplash.com/photo-1455218873509-8097305ee378?q=80&w=500" class="card-img" alt="The World">
-                        <div class="card-desc">
-                            <h3>The World</h3>
-                            <p>"Bạn là cả thế giới rạng rỡ và yên bình mà tôi luôn tìm kiếm."</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+    <div id="hero-screen">
+        <div class="bg-window"></div>
+        <div class="sunlight-overlay"></div>
+        <div class="content">
+            <h2>Gửi người tôi thương...</h2>
+            <button class="cta-button" onclick="startTarot()">Khám phá lời thì thầm</button>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <div id="tarot-screen">
+        <div class="twinkle-background"></div>
+        <div class="main-content">
+            <h1>Chọn một đóa hoa cho tâm hồn bạn...</h1>
+            <div class="tarot-wrapper">
+                <div class="card" onclick="this.classList.toggle('is-flipped')">
+                    <div class="card-inner">
+                        <div class="face front"><div class="front-pattern">🌿</div></div>
+                        <div class="back">
+                            <div class="flower-icon">🌸</div>
+                            <p>"Vẻ đẹp của bạn nhẹ nhàng như hơi thở của mùa xuân."</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card" onclick="this.classList.toggle('is-flipped')">
+                    <div class="card-inner">
+                        <div class="face front"><div class="front-pattern">🌼</div></div>
+                        <div class="back">
+                            <div class="flower-icon">🌷</div>
+                            <p>"Vũ trụ bảo rằng bạn xứng đáng với những điều ngọt ngào nhất."</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card" onclick="this.classList.toggle('is-flipped')">
+                    <div class="card-inner">
+                        <div class="face front"><div class="front-pattern">🍃</div></div>
+                        <div class="back">
+                            <div class="flower-icon">🌻</div>
+                            <p>"Có một người luôn mỉm cười khi nghĩ về bạn."</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        particlesJS("particles-js", {
-            "particles": {
-                "number": { "value": 50, "density": { "enable": true, "value_area": 800 } },
-                "color": { "value": "#e2c275" },
-                "shape": { "type": "circle" },
-                "opacity": { "value": 0.4, "random": true },
-                "size": { "value": 3, "random": true },
-                "line_linked": { "enable": false },
-                "move": { "enable": true, "speed": 1, "direction": "bottom", "random": true, "out_mode": "out" }
-            }
-        });
+        // Hàm xử lý chuyển cảnh
+        function startTarot() {
+            const hero = document.getElementById('hero-screen');
+            const tarot = document.getElementById('tarot-screen');
+
+            // Mờ dần màn hình cửa sổ
+            hero.style.opacity = '0';
+            
+            // Sau khi mờ xong (1 giây), ẩn hẳn màn hình cửa sổ và hiện màn hình Tarot
+            setTimeout(() => {
+                hero.style.display = 'none'; // Ẩn hẳn
+                tarot.classList.add('active'); // Hiện dần màn hình Tarot
+            }, 1000); // 1000ms trùng với thời gian transition CSS
+        }
     </script>
 </body>
 </html>
